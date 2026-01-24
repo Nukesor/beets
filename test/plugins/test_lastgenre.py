@@ -403,6 +403,27 @@ class LastGenrePluginTest(PluginTestCase):
             },
             ("fallback genre", "fallback"),
         ),
+        # 7.3 - Keep the original genre when force and keep_existing are on,
+        # whitelist is enabled, but genre is invalid **and** fallback_keep_existing
+        # is on.
+        (
+            {
+                "force": True,
+                "keep_existing": False,
+                "source": "track",
+                "whitelist": True,
+                "fallback_keep_existing": True,
+                "canonical": False,
+                "prefer_specific": False,
+            },
+            "Jazzers-invalid",
+            {
+                "track": None,
+                "album": None,
+                "artist": None,
+            },
+            ("Jazzers-invalid", "fallback keep any, force"),
+        ),
         # 8 - fallback to fallback if no original
         (
             {

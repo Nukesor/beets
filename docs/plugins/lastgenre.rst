@@ -180,6 +180,10 @@ file. The available options are:
 - **fallback**: A string to use as a fallback genre when no genre is found
   ``or`` the original genre is not desired to be kept (``keep_existing: no``).
   You can use the empty string ``''`` to reset the genre. Default: None.
+- **fallback_keep_existing**: This setting takes effect on ``whitelist: yes``.
+  When no genres can be found or no genres match the canonical whitelist,
+  setting this to ``yes`` will result in existing tags to be preserved, instead
+  of deleting them or setting them to ``fallback``. Default: ``no``.
 - **force**: By default, lastgenre will fetch new genres for empty tags only,
   enable this option to always try to fetch new last.fm genres. Enable the
   ``keep_existing`` option to combine existing and new genres. (see `Handling

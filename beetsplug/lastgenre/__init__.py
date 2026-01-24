@@ -105,6 +105,7 @@ class LastGenrePlugin(plugins.BeetsPlugin):
                 "min_weight": 10,
                 "count": 1,
                 "fallback": None,
+                "fallback_keep_existing": False,
                 "canonical": False,
                 "canonicalize_existing": False,
                 "source": "album",
@@ -411,6 +412,12 @@ class LastGenrePlugin(plugins.BeetsPlugin):
                 keep_genres = [g.lower() for g in genres]
                 if result := _try_resolve_stage("original", keep_genres, []):
                     return result
+                if fallback := self.config["fallback_keep_existing"]:
+                    label = "keep + original fallback, no-force, whitelist"
+                    if isinstance(obj, library.Item):
+                        return obj.get("genre", with_album=False), label
+                    return obj.get("genre"), label
+
                 elif fallback := self.config["fallback"].get():
                     # Return fallback string.
                     return fallback, "fallback"
@@ -508,6 +515,17 @@ class LastGenrePlugin(plugins.BeetsPlugin):
                     "original fallback", keep_genres, []
                 ):
                     return result
+
+        # If fallback_keep_existing is set, use the existing genres instead of setting
+        # instead of setting it to an arbitrary value or `None`.
+        #
+        # This is for people that would rather have a non-canonicalized genre than no
+        # genre at all.
+        if obj.genre and self.config["fallback_keep_existing"]:
+            label = "fallback keep any, force"
+            if isinstance(obj, library.Item):
+                return obj.get("genre", with_album=False), label
+            return obj.get("genre"), label
 
         # Return fallback string.
         if fallback := self.config["fallback"].get():
